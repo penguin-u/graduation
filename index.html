@@ -313,6 +313,8 @@
     display: none;
     flex-direction: column;
     background: var(--cream);
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   #page-card.visible { display: flex; }
@@ -320,10 +322,11 @@
   /* 卡片本體 */
   .card-wrap {
     flex: 1;
-    overflow-y: auto;
-    padding: 48px 28px 32px;
+    overflow-y: visible;
+    padding: 20px 20px 40px;
     display: flex;
     flex-direction: column;
+    gap: 0;
   }
 
   /* 卡片外框 */
@@ -479,12 +482,79 @@
     background: var(--gold-light);
   }
 
-  .guestbook-frame {
+  /* 自製留言板 */
+  .guestbook-form {
+    background: #fff;
+    border: 1px solid var(--gold-light);
+    border-radius: 4px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .gb-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .gb-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold-dark);
+  }
+
+  .gb-input, .gb-textarea {
     width: 100%;
-    min-height: 480px;
+    padding: 12px 16px;
+    background: var(--cream);
+    border: 1px solid var(--gold-light);
+    border-radius: 2px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px;
+    color: var(--brown);
+    outline: none;
+    transition: border-color 0.3s;
+    letter-spacing: 1px;
+  }
+  .gb-input:focus, .gb-textarea:focus { border-color: var(--gold); }
+  .gb-input::placeholder, .gb-textarea::placeholder { color: #ccc; font-size: 13px; }
+
+  .gb-textarea {
+    min-height: 100px;
+    resize: none;
+    line-height: 1.8;
+  }
+
+  .gb-submit {
+    padding: 13px;
+    background: var(--gold);
+    color: var(--cream);
+    border: none;
+    border-radius: 2px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 100%;
+  }
+  .gb-submit:hover { background: var(--gold-dark); }
+  .gb-submit:disabled { background: var(--gold-light); cursor: not-allowed; }
+
+  .gb-success {
+    display: none;
+    text-align: center;
+    padding: 24px;
+    background: #fff;
     border: 1px solid var(--gold-light);
     border-radius: 4px;
   }
+
+  .gb-success-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+  .gb-success-text { font-size: 14px; color: var(--brown); line-height: 2; font-weight: 300; }
+  .gb-success-sub { font-size: 11px; color: var(--gold-dark); letter-spacing: 2px; margin-top: 8px; }
 
   /* 共同結尾 */
   .ending-wrap {
@@ -631,13 +701,13 @@
     <div class="home-title">畢 業 紀 念 冊</div>
     <div class="home-sub">
       <!-- ★ 改成你的班級 -->
-      CK78th · 2024-2026
+      ＿＿年＿班 · CLASS OF 2026
     </div>
     <div class="home-divider"></div>
     <p class="home-desc">
       <!-- ★ 改成你的開場白 -->
       感謝你出現在我的青春裡。<br>
-      輸入你的名字，看看我想對你說的話。
+      輸入你的名字，<br>看看我想對你說的話。
     </p>
 
     <div class="input-wrap">
@@ -670,7 +740,8 @@
     <p class="notfound-desc">
       <!-- ★ 可以改成你想說的話 -->
       我還沒來得及把你的那頁做好，<br>
-      但你能出現在這裡，已經讓我很開心了。<br><br>
+      但你出現在這裡，<br>
+      已經讓我很開心了。<br><br>
       再等等我，很快就好。
     </p>
     <button class="notfound-back" onclick="showHome()">← 回到首頁</button>
@@ -730,7 +801,7 @@
           <div class="card-from-label">from</div>
           <div class="card-from-name" id="cardFromName">
             <!-- ★ 改成你的名字 -->
-            楊哲瑄
+            你的名字
           </div>
         </div>
         <div class="card-date" id="cardDate"></div>
@@ -742,14 +813,26 @@
       <div class="section-title-row">
         <span>給我一句話</span>
       </div>
-      <iframe
-        id="guestbookFrame"
-        class="guestbook-frame"
-        src=""
-        frameborder="0"
-        marginheight="0"
-        marginwidth="0">
-      </iframe>
+
+      <!-- 自製留言表單 -->
+      <div class="guestbook-form" id="gbForm">
+        <div class="gb-field">
+          <div class="gb-label">你的名字</div>
+          <input class="gb-input" id="gbName" type="text" placeholder="輸入你的名字" maxlength="20"/>
+        </div>
+        <div class="gb-field">
+          <div class="gb-label">想對我說的話</div>
+          <textarea class="gb-textarea" id="gbMessage" placeholder="寫下你想說的話…" maxlength="300"></textarea>
+        </div>
+        <button class="gb-submit" id="gbSubmit" onclick="submitGuestbook()">送出 ✦</button>
+      </div>
+
+      <!-- 送出成功 -->
+      <div class="gb-success" id="gbSuccess">
+        <span class="gb-success-icon">💌</span>
+        <div class="gb-success-text">謝謝你留下這句話<br>我會好好珍惜的</div>
+        <div class="gb-success-sub">✦ &nbsp; 已收到 &nbsp; ✦</div>
+      </div>
     </div>
 
     <!-- 共同結尾 -->
@@ -844,8 +927,8 @@ const CARDS = [
   // ↑ 繼續往下加，格式一樣，最後一個不加逗號
 ];
 
-// ★ 全員共用的 Google 表單嵌入連結
-const DEFAULT_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSe5_xNGpht0-Tw_IQVPvKCEmmM2triEtmhYOlGVf0yILNQS4w/viewform?embedded=true";
+// ★ Google Apps Script 網址
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzz3J2tBgMo15y3WSK7yvJdtG3K2S0Q3V6h07Mj7rVRkxO3LN9FAX2DfVJXFTPv3fd/exec";
 
 // ★ 你的名字（署名用）
 const MY_NAME = "你的名字";
@@ -928,8 +1011,13 @@ function renderCardPage(data) {
     </div>
   `).join('');
 
-  // 表單
-  document.getElementById('guestbookFrame').src = data.formSrc || DEFAULT_FORM;
+  // 重置留言板
+  document.getElementById('gbName').value = '';
+  document.getElementById('gbMessage').value = '';
+  document.getElementById('gbForm').style.display = 'flex';
+  document.getElementById('gbSuccess').style.display = 'none';
+  document.getElementById('gbSubmit').disabled = false;
+  document.getElementById('gbSubmit').textContent = '送出 ✦';
 
   // 重播動畫
   const body = document.getElementById('cardBody');
@@ -942,6 +1030,45 @@ function renderCardPage(data) {
 // ══════════════════════════════════════
 //  頁面切換
 // ══════════════════════════════════════
+// ══════════════════════════════════════
+//  留言板送出
+// ══════════════════════════════════════
+function submitGuestbook() {
+  const name = document.getElementById('gbName').value.trim();
+  const message = document.getElementById('gbMessage').value.trim();
+
+  if (!name || !message) {
+    alert('請填寫名字和留言！');
+    return;
+  }
+
+  const btn = document.getElementById('gbSubmit');
+  btn.disabled = true;
+  btn.textContent = '送出中…';
+
+  const payload = {
+    cardName: currentCard ? currentCard.name : '未知',
+    senderName: name,
+    message: message
+  };
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    document.getElementById('gbForm').style.display = 'none';
+    document.getElementById('gbSuccess').style.display = 'block';
+  })
+  .catch(() => {
+    btn.disabled = false;
+    btn.textContent = '送出 ✦';
+    alert('送出失敗，請再試一次！');
+  });
+}
+
 function showHome() {
   document.getElementById('page-notfound').classList.remove('visible');
   document.getElementById('page-photo').classList.remove('visible');
@@ -966,8 +1093,10 @@ function showPhotoPage() {
 function showCardPage() {
   if (!currentCard) return;
   renderCardPage(currentCard);
-  document.getElementById('page-card').classList.add('visible');
-  document.getElementById('page-card').scrollIntoView({ behavior: 'smooth' });
+  const cardPage = document.getElementById('page-card');
+  cardPage.classList.add('visible');
+  cardPage.scrollTop = 0;
+  cardPage.scrollIntoView({ behavior: 'smooth' });
 }
 </script>
 </body>
