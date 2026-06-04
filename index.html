@@ -29,6 +29,7 @@
      頁面共用
   ══════════════════════════ */
   .snap-page {
+    min-height: 100dvh;
     height: 100dvh;
     scroll-snap-align: start;
     scroll-snap-stop: always;
@@ -47,6 +48,8 @@
     background: linear-gradient(160deg, #1C1209 0%, #2C1810 50%, #1C1209 100%);
     text-align: center;
     padding: 40px 24px;
+    min-height: 100dvh;
+    height: auto;
   }
 
   #page-home::before {
@@ -754,13 +757,13 @@
     <div class="home-title">畢 業 紀 念 冊</div>
     <div class="home-sub">
       <!-- ★ 改成你的班級 -->
-      CK78th · 2024-2026
+      ＿＿年＿班 · CLASS OF 2026
     </div>
     <div class="home-divider"></div>
     <p class="home-desc">
       <!-- ★ 改成你的開場白 -->
       感謝你出現在我的青春裡。<br>
-      輸入你的名字，看看我想對你說的話。
+      輸入你的名字，<br>看看我想對你說的話。
     </p>
 
     <div class="input-wrap">
@@ -768,7 +771,7 @@
         class="name-input"
         id="nameInput"
         type="text"
-        placeholder="輸 入 你 的 名 字 ( 全名!!! )"
+        placeholder="輸 入 你 的 名 字"
         maxlength="10"
         onkeydown="if(event.key==='Enter') searchCard()"
         oninput="document.getElementById('errorMsg').style.display='none'"
@@ -793,7 +796,8 @@
     <p class="notfound-desc">
       <!-- ★ 可以改成你想說的話 -->
       我還沒來得及把你的那頁做好，<br>
-      但你出現在這裡，已經讓我很開心了。<br><br>
+      但你出現在這裡，<br>
+      已經讓我很開心了。<br><br>
       再等等我，很快就好。
     </p>
     <button class="notfound-back" onclick="showHome()">← 回到首頁</button>
@@ -853,7 +857,7 @@
           <div class="card-from-label">from</div>
           <div class="card-from-name" id="cardFromName">
             <!-- ★ 改成你的名字 -->
-            楊哲瑄
+            你的名字
           </div>
         </div>
         <div class="card-date" id="cardDate"></div>
@@ -980,6 +984,20 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzz3J2tBgMo15y
 
 // ★ 你的名字（署名用）
 const MY_NAME = "你的名字";
+
+// ══════════════════════════════════════
+//  iOS 鍵盤修正：輸入框聚焦時暫停 scroll-snap
+// ══════════════════════════════════════
+document.addEventListener('focusin', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+    document.documentElement.style.scrollSnapType = 'none';
+  }
+});
+document.addEventListener('focusout', () => {
+  setTimeout(() => {
+    document.documentElement.style.scrollSnapType = 'y mandatory';
+  }, 300);
+});
 
 // ══════════════════════════════════════
 //  狀態
