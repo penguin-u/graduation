@@ -313,17 +313,18 @@
     display: none;
     flex-direction: column;
     background: var(--cream);
+    height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   #page-card.visible { display: flex; }
 
   /* 卡片本體 */
   .card-wrap {
-    flex: 1;
-    overflow-y: visible;
-    padding: 20px 20px 40px;
+    flex: none;
+    padding: 16px 16px 40px;
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -355,7 +356,7 @@
 
   /* 卡片頂部 */
   .card-header {
-    padding: 28px 28px 20px;
+    padding: 20px 20px 16px;
     border-bottom: 1px solid #f0e8d8;
     display: flex;
     align-items: center;
@@ -393,10 +394,10 @@
 
   /* 段落區 */
   .card-sections {
-    padding: 24px 28px;
+    padding: 20px 20px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
   }
 
   .card-section { }
@@ -429,7 +430,7 @@
 
   /* 署名 */
   .card-footer {
-    padding: 20px 28px 28px;
+    padding: 16px 20px 20px;
     border-top: 1px solid #f0e8d8;
     display: flex;
     align-items: flex-end;
@@ -459,7 +460,7 @@
 
   /* 留言板 */
   .guestbook-wrap {
-    padding: 0 28px 28px;
+    padding: 0 16px 28px;
   }
 
   .section-title-row {
@@ -558,10 +559,10 @@
 
   /* 共同結尾 */
   .ending-wrap {
-    padding: 32px 28px 48px;
+    padding: 28px 16px 48px;
     text-align: center;
     border-top: 1px solid var(--gold-light);
-    margin: 0 28px;
+    margin: 0 16px;
   }
 
   .ending-quote {
@@ -581,7 +582,7 @@
 
   /* 뒤로가기 */
   .back-row {
-    padding: 16px 28px 0;
+    padding: 14px 16px 0;
     flex-shrink: 0;
   }
 
@@ -690,6 +691,58 @@
     border-color: var(--gold);
     color: var(--deep);
   }
+
+  /* ══════════════════════════
+     手機優化
+  ══════════════════════════ */
+  @media (max-width: 480px) {
+
+    /* 首頁：縮小間距，避免內容超出螢幕 */
+    #page-home { padding: 32px 20px; }
+    .home-divider { margin: 20px auto; height: 28px; }
+    .home-desc { margin-bottom: 24px; font-size: 13px; }
+
+    /* 輸入框更大更好按 */
+    .name-input { font-size: 16px; padding: 16px 48px 16px 16px; }
+    .input-btn { font-size: 22px; }
+
+    /* 照片頁：標籤區不要太高 */
+    .tag-area { padding: 16px 20px 20px; }
+    .tags { margin-bottom: 16px; gap: 6px; }
+    .tag { font-size: 11px; padding: 4px 12px; }
+    .see-card-btn { padding: 16px 20px; font-size: 14px; }
+    .photo-name-overlay { padding: 16px 20px 0; }
+
+    /* 卡片頁：更緊湊的間距 */
+    .card-wrap { padding: 12px 12px 40px; }
+    .card-header { padding: 16px 16px 14px; }
+    .card-sections { padding: 16px 16px; gap: 18px; }
+    .card-footer { padding: 16px 16px 20px; }
+    .card-recipient { font-size: 20px; }
+    .card-seal { width: 38px; height: 38px; font-size: 17px; }
+    .section-text { font-size: 14px; line-height: 2; }
+
+    /* 留言板 */
+    .guestbook-wrap { padding: 0 12px 24px; }
+    .gb-input, .gb-textarea { font-size: 16px; } /* 防止 iOS 自動放大 */
+    .gb-submit { padding: 16px; font-size: 14px; }
+
+    /* 結尾 */
+    .ending-wrap { margin: 0 12px; padding: 24px 16px 40px; }
+    .ending-quote { font-size: 15px; }
+
+    /* 找不到頁 */
+    #page-notfound { padding: 40px 24px; }
+    .notfound-title { font-size: 22px; }
+    .notfound-desc { font-size: 13px; }
+  }
+
+  /* 防止 iOS Safari 輸入框自動放大 */
+  @media (max-width: 768px) {
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -715,7 +768,7 @@
         class="name-input"
         id="nameInput"
         type="text"
-        placeholder="輸 入 你 的 名 字"
+        placeholder="輸 入 你 的 名 字 ( 全名!!! )"
         maxlength="10"
         onkeydown="if(event.key==='Enter') searchCard()"
         oninput="document.getElementById('errorMsg').style.display='none'"
@@ -757,7 +810,7 @@
     </div>
     <div class="photo-name-overlay">
       <div class="photo-name" id="photoName">名字</div>
-      <div class="photo-class">最喜歡的你</div>
+      <div class="photo-class">CLASS OF 2026</div>
     </div>
   </div>
 
@@ -815,10 +868,6 @@
 
       <!-- 自製留言表單 -->
       <div class="guestbook-form" id="gbForm">
-        <div class="gb-field">
-          <div class="gb-label">你的名字</div>
-          <input class="gb-input" id="gbName" type="text" placeholder="輸入你的名字" maxlength="20"/>
-        </div>
         <div class="gb-field">
           <div class="gb-label">想對我說的話</div>
           <textarea class="gb-textarea" id="gbMessage" placeholder="寫下你想說的話…" maxlength="300"></textarea>
@@ -930,12 +979,13 @@ const CARDS = [
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzz3J2tBgMo15y3WSK7yvJdtG3K2S0Q3V6h07Mj7rVRkxO3LN9FAX2DfVJXFTPv3fd/exec";
 
 // ★ 你的名字（署名用）
-const MY_NAME = "楊哲瑄";
+const MY_NAME = "你的名字";
 
 // ══════════════════════════════════════
 //  狀態
 // ══════════════════════════════════════
 let currentCard = null;
+let currentVisitorName = '';
 
 // ══════════════════════════════════════
 //  搜尋
@@ -950,11 +1000,25 @@ function searchCard() {
   );
 
   if (!found) {
-    showNotFound();
+    showNotFound(input);
     return;
   }
 
   currentCard = found;
+  currentVisitorName = input;
+
+  // 自動記錄造訪到試算表
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      cardName: found.name,
+      senderName: input,
+      message: '（造訪了卡片，尚未留言）'
+    })
+  }).catch(() => {});
+
   renderPhotoPage(found);
   showPhotoPage();
 }
@@ -1011,7 +1075,6 @@ function renderCardPage(data) {
   `).join('');
 
   // 重置留言板
-  document.getElementById('gbName').value = '';
   document.getElementById('gbMessage').value = '';
   document.getElementById('gbForm').style.display = 'flex';
   document.getElementById('gbSuccess').style.display = 'none';
@@ -1033,11 +1096,10 @@ function renderCardPage(data) {
 //  留言板送出
 // ══════════════════════════════════════
 function submitGuestbook() {
-  const name = document.getElementById('gbName').value.trim();
   const message = document.getElementById('gbMessage').value.trim();
 
-  if (!name || !message) {
-    alert('請填寫名字和留言！');
+  if (!message) {
+    alert('請填寫想說的話！');
     return;
   }
 
@@ -1047,7 +1109,7 @@ function submitGuestbook() {
 
   const payload = {
     cardName: currentCard ? currentCard.name : '未知',
-    senderName: name,
+    senderName: currentVisitorName,
     message: message
   };
 
@@ -1076,11 +1138,23 @@ function showHome() {
   document.getElementById('nameInput').value = '';
 }
 
-function showNotFound() {
+function showNotFound(name) {
   document.getElementById('page-notfound').classList.add('visible');
   document.getElementById('page-photo').classList.remove('visible');
   document.getElementById('page-card').classList.remove('visible');
   document.getElementById('page-notfound').scrollIntoView({ behavior: 'smooth' });
+
+  // 把找不到的名字記錄到試算表
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      cardName: '【待製作】' + name,
+      senderName: '—',
+      message: '這個人來找卡片但還沒有'
+    })
+  }).catch(() => {});
 }
 
 function showPhotoPage() {
@@ -1094,8 +1168,10 @@ function showCardPage() {
   renderCardPage(currentCard);
   const cardPage = document.getElementById('page-card');
   cardPage.classList.add('visible');
+  // 強制捲回頂部再跳頁
   cardPage.scrollTop = 0;
   cardPage.scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => { cardPage.scrollTop = 0; }, 300);
 }
 </script>
 </body>
