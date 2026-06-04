@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>畢業紀念冊 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Sans+TC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --gold-dark: #8B6914;
+    --cream: #FAF6EE;
+    --deep: #1C1209;
+    --brown: #4A3520;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-snap-type: y mandatory; overflow-y: scroll; }
+
+  body {
+    background: var(--cream);
+    color: var(--deep);
+    font-family: 'Noto Serif TC', serif;
+  }
+
+  /* ══════════════════════════
+     頁面共用
+  ══════════════════════════ */
+  .snap-page {
+    height: 100dvh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ══════════════════════════
+     首頁 / 輸入頁
+  ══════════════════════════ */
+  #page-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #1C1209 0%, #2C1810 50%, #1C1209 100%);
+    text-align: center;
+    padding: 40px 24px;
+  }
+
+  #page-home::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(201,168,76,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 70%, rgba(201,168,76,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .home-inner { position: relative; z-index: 1; }
+
+  .home-year {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(72px, 18vw, 130px);
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    letter-spacing: -3px;
+    opacity: 0;
+    animation: fadeUp 1s 0.2s forwards;
+  }
+
+  .home-title {
+    font-size: clamp(14px, 3.5vw, 22px);
+    font-weight: 300;
+    letter-spacing: 8px;
+    color: var(--gold-light);
+    margin: 14px 0 6px;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+
+  .home-sub {
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: rgba(201,168,76,0.5);
+    opacity: 0;
+    animation: fadeUp 1s 0.7s forwards;
+    /* ★ 改成你的班級 */
+  }
+
+  .home-divider {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    margin: 32px auto;
+    opacity: 0;
+    animation: fadeUp 1s 0.9s forwards;
+  }
+
+  .home-desc {
+    font-size: 14px;
+    line-height: 2.2;
+    color: rgba(232,213,163,0.7);
+    font-weight: 300;
+    max-width: 300px;
+    margin: 0 auto 36px;
+    opacity: 0;
+    animation: fadeUp 1s 1s forwards;
+  }
+
+  /* 輸入框 */
+  .input-wrap {
+    position: relative;
+    width: min(320px, 85vw);
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeUp 1s 1.1s forwards;
+  }
+
+  .name-input {
+    width: 100%;
+    padding: 14px 48px 14px 20px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 2px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px;
+    color: var(--gold-light);
+    letter-spacing: 3px;
+    outline: none;
+    transition: border-color 0.3s, background 0.3s;
+    text-align: center;
+  }
+  .name-input::placeholder { color: rgba(201,168,76,0.3); font-size: 13px; }
+  .name-input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); }
+
+  .input-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    transition: transform 0.2s;
+  }
+  .input-btn:hover { transform: translateY(-50%) scale(1.2); }
+
+  .error-msg {
+    margin-top: 12px;
+    color: #e07070;
+    font-size: 12px;
+    letter-spacing: 1px;
+    display: none;
+    animation: fadeUp 0.3s forwards;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    animation: fadeUp 1s 1.5s forwards;
+    pointer-events: none;
+  }
+  .scroll-hint span { font-size: 10px; letter-spacing: 3px; color: rgba(201,168,76,0.4); }
+  .scroll-arrow {
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 1.8s infinite;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ══════════════════════════
+     照片 + 標籤頁
+  ══════════════════════════ */
+  #page-photo {
+    display: none;
+    flex-direction: column;
+    position: relative;
+  }
+
+  #page-photo.visible { display: flex; }
+
+  /* 照片佔上半部 */
+  .photo-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #1a1a1a;
+  }
+
+  .photo-area img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+  .photo-area img.loaded { opacity: 1; }
+
+  .photo-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2a1f12, #3d2a18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .photo-placeholder span { font-size: 48px; }
+  .photo-placeholder p { font-size: 11px; letter-spacing: 4px; color: rgba(201,168,76,0.4); }
+
+  /* 漸層遮罩 */
+  .photo-area::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(to top, var(--cream), transparent);
+    pointer-events: none;
+  }
+
+  /* 名字浮在照片上 */
+  .photo-name-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 24px 28px 0;
+    z-index: 2;
+  }
+
+  .photo-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 9vw, 52px);
+    color: var(--brown);
+    letter-spacing: 2px;
+    line-height: 1.1;
+  }
+
+  .photo-class {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gold-dark);
+    margin-top: 4px;
+  }
+
+  /* 標籤區 */
+  .tag-area {
+    background: var(--cream);
+    padding: 20px 28px 28px;
+    flex-shrink: 0;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .tag {
+    padding: 5px 14px;
+    border: 1px solid var(--gold);
+    color: var(--gold-dark);
+    font-size: 11px;
+    letter-spacing: 1px;
+    border-radius: 20px;
+    font-family: 'Noto Sans TC', sans-serif;
+    background: rgba(201,168,76,0.06);
+  }
+
+  /* 往下看卡片的按鈕 */
+  .see-card-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--gold);
+    color: var(--cream);
+    border: none;
+    border-radius: 2px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.3s;
+  }
+  .see-card-btn:hover { background: var(--gold-dark); }
+  .see-card-btn svg { opacity: 0.8; }
+
+  /* ══════════════════════════
+     卡片頁
+  ══════════════════════════ */
+  #page-card {
+    display: none;
+    flex-direction: column;
+    background: var(--cream);
+  }
+
+  #page-card.visible { display: flex; }
+
+  /* 卡片本體 */
+  .card-wrap {
+    flex: 1;
+    overflow-y: auto;
+    padding: 48px 28px 32px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 卡片外框 */
+  .card-body {
+    background: #fff;
+    border: 1px solid var(--gold-light);
+    border-radius: 4px;
+    box-shadow:
+      0 2px 8px rgba(0,0,0,0.06),
+      0 12px 40px rgba(0,0,0,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+    overflow: hidden;
+    animation: cardReveal 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+
+  @keyframes cardReveal {
+    from { opacity: 0; transform: translateY(30px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* 卡片頂部金色裝飾帶 */
+  .card-header-bar {
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light), var(--gold));
+  }
+
+  /* 卡片頂部 */
+  .card-header {
+    padding: 28px 28px 20px;
+    border-bottom: 1px solid #f0e8d8;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-header-left { }
+
+  .card-to {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold-dark);
+    margin-bottom: 4px;
+  }
+
+  .card-recipient {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--brown);
+    letter-spacing: 1px;
+  }
+
+  .card-seal {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* 段落區 */
+  .card-sections {
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .card-section { }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gold-light);
+    max-width: 60px;
+  }
+
+  .section-text {
+    font-size: 14px;
+    line-height: 2.1;
+    color: var(--brown);
+    font-weight: 300;
+    white-space: pre-line;
+  }
+
+  /* 署名 */
+  .card-footer {
+    padding: 20px 28px 28px;
+    border-top: 1px solid #f0e8d8;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .card-from-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #bbb;
+    margin-bottom: 4px;
+  }
+
+  .card-from-name {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--gold-dark);
+  }
+
+  .card-date {
+    font-size: 11px;
+    color: #ccc;
+    letter-spacing: 1px;
+    text-align: right;
+  }
+
+  /* 留言板 */
+  .guestbook-wrap {
+    padding: 0 28px 28px;
+  }
+
+  .section-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .section-title-row span {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--gold-dark);
+    white-space: nowrap;
+  }
+  .section-title-row::before,
+  .section-title-row::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gold-light);
+  }
+
+  .guestbook-frame {
+    width: 100%;
+    min-height: 480px;
+    border: 1px solid var(--gold-light);
+    border-radius: 4px;
+  }
+
+  /* 共同結尾 */
+  .ending-wrap {
+    padding: 32px 28px 48px;
+    text-align: center;
+    border-top: 1px solid var(--gold-light);
+    margin: 0 28px;
+  }
+
+  .ending-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--brown);
+    line-height: 1.9;
+    margin-bottom: 20px;
+  }
+
+  .ending-stars {
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 6px;
+  }
+
+  /* 뒤로가기 */
+  .back-row {
+    padding: 16px 28px 0;
+    flex-shrink: 0;
+  }
+
+  .back-btn {
+    background: none;
+    border: none;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--gold-dark);
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .back-btn:hover { opacity: 1; }
+
+  /* ══════════════════════════
+     動畫
+  ══════════════════════════ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    animation: fadeUp 0.6s forwards;
+  }
+
+  /* ══════════════════════════
+     找不到頁
+  ══════════════════════════ */
+  #page-notfound {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #1C1209 0%, #2C1810 50%, #1C1209 100%);
+    text-align: center;
+    padding: 48px 32px;
+  }
+
+  #page-notfound.visible { display: flex; }
+
+  #page-notfound::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, rgba(201,168,76,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .notfound-inner { position: relative; z-index: 1; }
+
+  .notfound-icon {
+    font-size: 52px;
+    margin-bottom: 28px;
+    display: block;
+    animation: floatIcon 3s ease-in-out infinite;
+  }
+
+  @keyframes floatIcon {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .notfound-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 6vw, 32px);
+    color: var(--gold);
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+
+  .notfound-desc {
+    font-size: 14px;
+    line-height: 2.2;
+    color: rgba(232,213,163,0.65);
+    font-weight: 300;
+    max-width: 280px;
+    margin: 0 auto 40px;
+  }
+
+  .notfound-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 24px auto;
+  }
+
+  .notfound-back {
+    padding: 14px 40px;
+    border: 1px solid rgba(201,168,76,0.4);
+    background: transparent;
+    color: var(--gold-light);
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .notfound-back:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--deep);
+  }
+</style>
+</head>
+<body>
+
+<!-- ════ 首頁 ════ -->
+<div id="page-home" class="snap-page">
+  <div class="home-inner">
+    <div class="home-year">2026</div>
+    <div class="home-title">畢 業 紀 念 冊</div>
+    <div class="home-sub">
+      <!-- ★ 改成你的班級 -->
+      ＿＿年＿班 · CLASS OF 2026
+    </div>
+    <div class="home-divider"></div>
+    <p class="home-desc">
+      <!-- ★ 改成你的開場白 -->
+      感謝你出現在我的青春裡。<br>
+      輸入你的名字，<br>看看我想對你說的話。
+    </p>
+
+    <div class="input-wrap">
+      <input
+        class="name-input"
+        id="nameInput"
+        type="text"
+        placeholder="輸 入 你 的 名 字"
+        maxlength="10"
+        onkeydown="if(event.key==='Enter') searchCard()"
+        oninput="document.getElementById('errorMsg').style.display='none'"
+      />
+      <button class="input-btn" onclick="searchCard()">→</button>
+    </div>
+    <p class="error-msg" id="errorMsg">找不到這個名字，請再試試看 ✦</p>
+  </div>
+
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<!-- ════ 找不到頁 ════ -->
+<div id="page-notfound" class="snap-page">
+  <div class="notfound-inner">
+    <span class="notfound-icon">🎁</span>
+    <div class="notfound-title">你的卡片還在加工中</div>
+    <div class="notfound-divider"></div>
+    <p class="notfound-desc">
+      <!-- ★ 可以改成你想說的話 -->
+      我還沒來得及把你的那頁做好，<br>
+      但你出現在這裡，<br>
+      已經讓我很開心了。<br><br>
+      再等等我，很快就好。
+    </p>
+    <button class="notfound-back" onclick="showHome()">← 回到首頁</button>
+  </div>
+</div>
+
+<!-- ════ 照片 + 標籤頁 ════ -->
+<div id="page-photo" class="snap-page">
+  <div class="photo-area" id="photoArea">
+    <!-- 照片或佔位 -->
+    <div class="photo-placeholder" id="photoPlaceholder">
+      <span>📸</span>
+      <p>合 照</p>
+    </div>
+    <div class="photo-name-overlay">
+      <div class="photo-name" id="photoName">名字</div>
+      <div class="photo-class">CLASS OF 2026</div>
+    </div>
+  </div>
+
+  <div class="tag-area">
+    <div class="tags" id="tagList"></div>
+    <button class="see-card-btn" onclick="showCardPage()">
+      <span>打開我寫給你的卡片</span>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 3v10M3 8l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- ════ 卡片頁 ════ -->
+<div id="page-card" class="snap-page">
+  <div class="back-row">
+    <button class="back-btn" onclick="showPhotoPage()">← 回上一頁</button>
+  </div>
+
+  <div class="card-wrap">
+
+    <!-- 卡片本體 -->
+    <div class="card-body" id="cardBody">
+      <div class="card-header-bar"></div>
+
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-to">致</div>
+          <div class="card-recipient" id="cardRecipient">名字</div>
+        </div>
+        <div class="card-seal">🎓</div>
+      </div>
+
+      <!-- 段落區 — 由 JS 動態生成 -->
+      <div class="card-sections" id="cardSections"></div>
+
+      <div class="card-footer">
+        <div>
+          <div class="card-from-label">from</div>
+          <div class="card-from-name" id="cardFromName">
+            <!-- ★ 改成你的名字 -->
+            你的名字
+          </div>
+        </div>
+        <div class="card-date" id="cardDate"></div>
+      </div>
+    </div>
+
+    <!-- 留言板 -->
+    <div class="guestbook-wrap" style="margin-top:32px">
+      <div class="section-title-row">
+        <span>給我一句話</span>
+      </div>
+      <iframe
+        id="guestbookFrame"
+        class="guestbook-frame"
+        src=""
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0">
+      </iframe>
+    </div>
+
+    <!-- 共同結尾 -->
+    <div class="ending-wrap">
+      <div class="ending-quote">
+        <!-- ★ 改成你的結語 -->
+        「無論走到哪裡，<br>
+        都別忘了我們一起笑過的樣子。」
+      </div>
+      <div class="ending-stars">✦ ✦ ✦</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  ★★★ 在這裡填入所有人的資料 ★★★
+//
+//  name     : 名字（搜尋用）
+//  aliases  : 其他輸入方式（英文名、暱稱等）
+//  tags     : 標籤陣列
+//  photo    : 合照路徑（null = 顯示佔位）
+//             同資料夾放法：'photos/小明.jpg'
+//  sections : 卡片段落，每段有 label（小標題）+ text（內文）
+//  formSrc  : 個人專屬表單連結（null = 使用預設）
+// ══════════════════════════════════════════════════════════
+const CARDS = [
+  {
+    name: "小明",
+    aliases: ["ming", "小明"],
+    tags: ["#死黨", "#籃球隊", "#同班三年"],
+    photo: null,  // 換成 'photos/小明.jpg'
+    sections: [
+      {
+        label: "我們的回憶",
+        text: "記得高一第一天，你借我一支筆，\n然後我們就這樣認識了。\n三年來你一直是那個讓我覺得來學校很值得的人。"
+      },
+      {
+        label: "我想說",
+        text: "你其實比你自己想的更厲害。\n希望你以後也能一直相信自己。"
+      },
+      {
+        label: "我的祝福",
+        text: "去做你想做的事吧。\n我會在某個地方為你加油的。"
+      }
+    ],
+    formSrc: null
+  },
+  {
+    name: "小美",
+    aliases: ["mei", "小美"],
+    tags: ["#同桌", "#午餐搭檔", "#互相吐槽"],
+    photo: null,
+    sections: [
+      {
+        label: "謝謝你",
+        text: "謝謝你陪我度過那些考試前的焦慮，\n也謝謝你在我難過的時候假裝沒看見，\n讓我能夠自己整理好再回來。"
+      },
+      {
+        label: "我想說",
+        text: "妳是那種讓人覺得世界還不錯的人。\n以後不管去哪裡都要繼續這樣。"
+      },
+      {
+        label: "祝福",
+        text: "願你所有想要的，\n都能在對的時間遇見。"
+      }
+    ],
+    formSrc: null
+  },
+  {
+    name: "測試",
+    aliases: ["test"],
+    tags: ["#測試", "#你好"],
+    photo: null,
+    sections: [
+      {
+        label: "第一段",
+        text: "這是第一個段落的內容。\n可以換行，可以寫很長。"
+      },
+      {
+        label: "第二段",
+        text: "這是第二段。"
+      },
+      {
+        label: "祝福",
+        text: "網站運作正常！"
+      }
+    ],
+    formSrc: null
+  }
+  // ↑ 繼續往下加，格式一樣，最後一個不加逗號
+];
+
+// ★ 全員共用的 Google 表單嵌入連結
+const DEFAULT_FORM = "https://docs.google.com/forms/d/e/你的表單ID/viewform?embedded=true";
+
+// ★ 你的名字（署名用）
+const MY_NAME = "你的名字";
+
+// ══════════════════════════════════════
+//  狀態
+// ══════════════════════════════════════
+let currentCard = null;
+
+// ══════════════════════════════════════
+//  搜尋
+// ══════════════════════════════════════
+function searchCard() {
+  const input = document.getElementById('nameInput').value.trim();
+  if (!input) return;
+
+  const found = CARDS.find(c =>
+    c.name === input ||
+    (c.aliases && c.aliases.some(a => a.toLowerCase() === input.toLowerCase()))
+  );
+
+  if (!found) {
+    showNotFound();
+    return;
+  }
+
+  currentCard = found;
+  renderPhotoPage(found);
+  showPhotoPage();
+}
+
+// ══════════════════════════════════════
+//  渲染照片頁
+// ══════════════════════════════════════
+function renderPhotoPage(data) {
+  document.getElementById('photoName').textContent = data.name;
+
+  // 照片
+  const area = document.getElementById('photoArea');
+  const placeholder = document.getElementById('photoPlaceholder');
+  const existing = area.querySelector('img');
+  if (existing) existing.remove();
+
+  if (data.photo) {
+    const img = document.createElement('img');
+    img.src = data.photo;
+    img.alt = data.name;
+    img.onload = () => img.classList.add('loaded');
+    area.insertBefore(img, area.querySelector('.photo-name-overlay'));
+    placeholder.style.display = 'none';
+  } else {
+    placeholder.style.display = 'flex';
+  }
+
+  // 標籤
+  const tagList = document.getElementById('tagList');
+  tagList.innerHTML = (data.tags || []).map(t =>
+    `<span class="tag">${t}</span>`
+  ).join('');
+}
+
+// ══════════════════════════════════════
+//  渲染卡片頁
+// ══════════════════════════════════════
+function renderCardPage(data) {
+  document.getElementById('cardRecipient').textContent = data.name;
+  document.getElementById('cardFromName').textContent = MY_NAME;
+
+  // 日期
+  const now = new Date();
+  document.getElementById('cardDate').textContent =
+    `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+
+  // 段落
+  const sections = document.getElementById('cardSections');
+  sections.innerHTML = (data.sections || []).map(s => `
+    <div class="card-section">
+      <div class="section-label">${s.label}</div>
+      <p class="section-text">${s.text.replace(/\n/g,'<br>')}</p>
+    </div>
+  `).join('');
+
+  // 表單
+  document.getElementById('guestbookFrame').src = data.formSrc || DEFAULT_FORM;
+
+  // 重播動畫
+  const body = document.getElementById('cardBody');
+  body.style.animation = 'none';
+  requestAnimationFrame(() => {
+    body.style.animation = '';
+  });
+}
+
+// ══════════════════════════════════════
+//  頁面切換
+// ══════════════════════════════════════
+function showHome() {
+  document.getElementById('page-notfound').classList.remove('visible');
+  document.getElementById('page-photo').classList.remove('visible');
+  document.getElementById('page-card').classList.remove('visible');
+  document.getElementById('page-home').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('nameInput').value = '';
+}
+
+function showNotFound() {
+  document.getElementById('page-notfound').classList.add('visible');
+  document.getElementById('page-photo').classList.remove('visible');
+  document.getElementById('page-card').classList.remove('visible');
+  document.getElementById('page-notfound').scrollIntoView({ behavior: 'smooth' });
+}
+
+function showPhotoPage() {
+  document.getElementById('page-photo').classList.add('visible');
+  document.getElementById('page-card').classList.remove('visible');
+  document.getElementById('page-photo').scrollIntoView({ behavior: 'smooth' });
+}
+
+function showCardPage() {
+  if (!currentCard) return;
+  renderCardPage(currentCard);
+  document.getElementById('page-card').classList.add('visible');
+  document.getElementById('page-card').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
